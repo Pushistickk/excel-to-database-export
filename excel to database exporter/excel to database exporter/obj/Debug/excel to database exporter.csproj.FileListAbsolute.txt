@@ -1,0 +1,18 @@
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\excel to database exporter.exe.config
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\excel to database exporter.exe
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\excel to database exporter.pdb
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\ExcelDataReader.DataSet.dll
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\ExcelDataReader.dll
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\ExcelDataReader.pdb
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\ExcelDataReader.xml
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\ExcelDataReader.DataSet.pdb
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\bin\Debug\ExcelDataReader.DataSet.xml
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.csproj.AssemblyReference.cache
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.csproj.SuggestedBindingRedirects.cache
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel_to_database_exporter.Form1.resources
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel_to_database_exporter.Properties.Resources.resources
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.csproj.GenerateResource.cache
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.csproj.CoreCompileInputs.cache
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.csproj.CopyComplete
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.exe
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database exporter\excel to database exporter\obj\Debug\excel to database exporter.pdb
