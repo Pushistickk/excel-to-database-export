@@ -27,18 +27,17 @@ namespace excel_to_database
 			openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 			try
 			{
-				DialogResult result = openFileDialog1.ShowDialog();
-
-				if (result != DialogResult.OK)
-					throw new Exception("Файл не выбран");
-
+				if (openFileDialog1.ShowDialog() != DialogResult.OK)
+					throw new Exception("Р¤Р°Р№Р» РЅРµ РІС‹Р±СЂР°РЅ");
+				listBox1.Items.Clear();
 				filename = openFileDialog1.FileName;
-				listBox1.Items.Add(filename);
+				files = filename.Split("");
+				listBox1.Items.Add(files[0]);
 				excelToTabControl();
 			}
 			catch (Exception exc)
 			{
-				MessageBox.Show(exc.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(exc.Message, "РћС€РёР±РєР°", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
@@ -78,19 +77,26 @@ namespace excel_to_database
 			listBox1.BackColor = Color.FromArgb(243, 243, 243);
 		}
 
-		public static DataGridView addDatagridview(int index) //создает динамические datagridview с наполнением
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			Program.DBC.closeConnection();
+			Application.Exit();
+		}
+
+		public static DataGridView addDatagridview(int index) //СЃРѕР·РґР°РµС‚ РґРёРЅР°РјРёС‡РµСЃРєРёРµ datagridview СЃ РЅР°РїРѕР»РЅРµРЅРёРµРј
 		{
 			DataGridView data = new DataGridView();
 			data.AutoSize = true;
 			data.Dock = DockStyle.Fill;
 			data.Name = "dynDGR";
-			data.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+			data.AllowUserToAddRows = false;
 			data.DataSource = GetExcelData(files[index]);
+			Program.dataGrids.Add(data);
 
 			return data;
 		}
 
-		public static DataTable GetExcelData(string path) //получает данные из excel таблицы 
+		public static DataTable GetExcelData(string path) //РїРѕР»СѓС‡Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· excel С‚Р°Р±Р»РёС†С‹ 
 		{
 			System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 			DataTable dt = new DataTable();
@@ -101,6 +107,7 @@ namespace excel_to_database
 			fileStream.Close();
 			return dt;
 		}
+
 		public void excelToTabControl()
 		{
 			if (listBox1.Items.Count == 0)
@@ -108,11 +115,36 @@ namespace excel_to_database
 				return;
 			}
 			tabControl1.TabPages.Clear();
-			foreach (string file in files)//добавляет новые вкладки для всех файлов.
+			Program.dataGrids.Clear();
+			foreach (string file in files)//РґРѕР±Р°РІР»СЏРµС‚ РЅРѕРІС‹Рµ РІРєР»Р°РґРєРё РґР»СЏ РІСЃРµС… С„Р°Р№Р»РѕРІ.
 			{
 				tabControl1.TabPages.Add(Path.GetFileName(file));
 				tabControl1.TabPages[tabControl1.TabPages.Count - 1].Controls.Add(addDatagridview(tabControl1.TabPages.Count - 1));
 			}
 		}
-	}
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+			if (Program.dataGrids.Count == 0)
+				return;
+			try
+			{
+				Program.recorder.BuildScheme(tabControl1.SelectedIndex);
+				Program.recorder.RecordInfo(tabControl1.SelectedIndex);
+			}
+			catch(Exception exc)
+            {
+				MessageBox.Show(exc.Message,"РћС€РёР±РєР°!",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
+			for (int i = 0; i < Program.dataGrids[tabControl1.SelectedIndex].ColumnCount; i++)
+			{
+				Program.dataGrids[tabControl1.SelectedIndex].Columns[i].HeaderText = Program.recorder.scheme[i];
+			}
+
+        }
+    }
 }

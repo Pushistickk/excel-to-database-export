@@ -42,3 +42,4 @@ C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database\excel
 C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database\excel to database\obj\Debug\net6.0-windows\excel to database.pdb
 C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database\excel to database\obj\Debug\net6.0-windows\excel to database.genruntimeconfig.cache
 C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database\excel to database\obj\Debug\net6.0-windows\ref\excel to database.dll
+C:\Users\nevzo\Documents\GitHub\excel-to-database-export\excel to database\excel to database\obj\Debug\net6.0-windows\excel_to_database.Form2.resources
