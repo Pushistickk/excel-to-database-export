@@ -226,6 +226,7 @@
             this.button1.TabIndex = 12;
             this.button1.Text = "Вернуться";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
@@ -235,6 +236,7 @@
             this.button2.TabIndex = 12;
             this.button2.Text = "Записать строку";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Form2
             // 
@@ -265,6 +267,7 @@
             this.Controls.Add(this.dataGridView1);
             this.Name = "Form2";
             this.Text = "Непрошедшие данные";
+            this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

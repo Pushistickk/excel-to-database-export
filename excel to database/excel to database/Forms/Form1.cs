@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using ExcelDataReader;
+using System.Text.RegularExpressions;
 namespace excel_to_database
 {
 	public partial class Form1 : Form
@@ -123,28 +124,73 @@ namespace excel_to_database
 			}
 		}
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+		private void Form1_Load(object sender, EventArgs e)
+		{
+			foreach (Company company in Program.database.Companies)
+			{
+				comboBox1.Items.Add(company.Companyname);
+			}
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			if (Program.dataGrids.Count == 0 || comboBox1.SelectedIndex == -1)
+			{
+				MessageBox.Show("Вы не выбрали файлы или компанию");
+				return;
+			}
+			int compId = 1;
+			Program.problematickData.Rows.Clear();
+			foreach (Company company in Program.database.Companies)
+			{
+				if (company.Companyname == comboBox1.Items[comboBox1.SelectedIndex].ToString())
+                {
+					compId = company.Id;
+					break;
+                }
+
+			}
+            try
+            {
+                Program.recorder.TransferInfo(tabControl1.SelectedIndex, compId);
+				Program.dataGrids.RemoveAt(tabControl1.SelectedIndex);
+				tabControl1.TabPages.RemoveAt(tabControl1.SelectedIndex);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+			if(Program.problematickData.Rows.Count > 0)
+            {
+				Form form = new Form2();
+				form.FormClosing += new FormClosingEventHandler(Form1_FormClosing);
+				this.Hide();
+				form.ShowDialog();
+            }
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-			if (Program.dataGrids.Count == 0)
+		private void button3_Click(object sender, EventArgs e)
+		{
+			if (textBox1.Text == "")
 				return;
+
 			try
 			{
-				Program.recorder.BuildScheme(tabControl1.SelectedIndex);
-				Program.recorder.RecordInfo(tabControl1.SelectedIndex);
+				Company company = new Company();
+				company.Companyname = textBox1.Text;
+				Program.database.Companies.Add(company);
+				Program.database.SaveChanges();
+				comboBox1.Items.Add(textBox1.Text);
 			}
 			catch(Exception exc)
-            {
-				MessageBox.Show(exc.Message,"Ошибка!",MessageBoxButtons.OK,MessageBoxIcon.Error);
-            }
-			for (int i = 0; i < Program.dataGrids[tabControl1.SelectedIndex].ColumnCount; i++)
 			{
-				Program.dataGrids[tabControl1.SelectedIndex].Columns[i].HeaderText = Program.recorder.scheme[i];
+				MessageBox.Show("Ошибка",exc.Message,MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			finally
+			{
+				textBox1.Text = "";
 			}
 
-        }
-    }
+		}
+	}
 }

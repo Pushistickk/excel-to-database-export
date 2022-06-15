@@ -11,6 +11,7 @@ namespace excel_to_database
         public static vdkContext database = new vdkContext();
         public static Recorder recorder = new Recorder();
         public static List<DataGridView> dataGrids = new List<DataGridView>();
+        public static DataGridView problematickData = new DataGridView();
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

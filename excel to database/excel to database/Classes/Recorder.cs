@@ -15,16 +15,16 @@ namespace excel_to_database
 		List<City> cities = new List<City>();
 		List<Region> regions = new List<Region>();
 		List<User> users = new List<User>();
-		public List<string> typeList = new List<string>();
+		private List<string> typeList = new List<string>();
 		Regex trashCleaner = new Regex("\\b(?i)(?:Область|Обл|г|город|гор)\\b");
-		public string[] scheme;
+		private string[] scheme;
 		public Recorder()
 		{
 			cities = Program.database.Cities.ToList<City>();
 			regions = Program.database.Regions.ToList<Region>();
 			users = Program.database.Users.ToList<User>();
 		}
-		public void BuildScheme(int index)
+		private void BuildScheme(int index)
 		{
 			int mistakeCounter = 1;
 			Regex regex;
@@ -250,6 +250,10 @@ namespace excel_to_database
 			}
 			return fullScheme.Remove(fullScheme.Length - 1);
 		}   //получить всю схему данных
+		private void SetLayout(string layout)
+		{
+			scheme = layout.Split(" ");
+		}   //поставить уже готовую схему
 		private DataGridView CopyDataGridView(DataGridView dgv_org)
 		{
 			DataGridView dgv_copy = new DataGridView();
@@ -286,123 +290,151 @@ namespace excel_to_database
 			}
 			return dgv_copy;
 		}   //функция для копирования одной таблицы в другую. через datacource не работает. я не знаю при этом почему. только так.
-		public void RecordInfo(int index)   //запись в базу данных
+		private void RecordInfo(int index)
 		{
 			for (int i = 0; i < Program.dataGrids[index].Rows.Count; i++) 
 			{
-				Record record = new Record();
-				string fullAdress = "";
-				for (int j = 0; j < Program.dataGrids[index].Columns.Count; j++) 			//составление данных для новой строки
+				try
 				{
-					if (scheme[j] == "accountNumber")
-						record.Accountnumber = Convert.ToInt32(Program.dataGrids[index].Rows[i].Cells[j].Value);
-					else if (scheme[j] == "fullname")
-						record.Fnp = Program.dataGrids[index].Rows[i].Cells[j].Value.ToString();
-					else if (scheme[j] == "meterReading")
-						record.Meterreading = Convert.ToInt32(Program.dataGrids[index].Rows[i].Cells[j].Value);
-					else if (scheme[j] == "meterType")
-						record.Metertype = Program.dataGrids[index].Rows[i].Cells[j].Value.ToString();
-					else if (scheme[j] == "dateStart")
+					Record record = new Record();
+					string fullAdress = "";
+					for (int j = 0; j < Program.dataGrids[index].Columns.Count; j++)            //составление данных для новой строки
 					{
-						DateTime dt;
-						if (DateTime.TryParse(Program.dataGrids[index].Rows[i].Cells[j].Value?.ToString(), out dt))
+						if (scheme[j] == "accountNumber")
+							record.Accountnumber = Convert.ToInt32(Program.dataGrids[index].Rows[i].Cells[j].Value);
+						else if (scheme[j] == "fullname")
+							record.Fnp = Program.dataGrids[index].Rows[i].Cells[j].Value.ToString();
+						else if (scheme[j] == "meterReading")
+							record.Meterreading = Convert.ToInt32(Program.dataGrids[index].Rows[i].Cells[j].Value);
+						else if (scheme[j] == "meterType")
+							record.Metertype = Program.dataGrids[index].Rows[i].Cells[j].Value.ToString();
+						else if (scheme[j] == "dateStart")
 						{
-							record.Datestart = DateOnly.FromDateTime(dt);
-						}
-					}
-					else if (scheme[j] == "dateEnd")
-					{
-						DateTime dt;
-						if (DateTime.TryParse(Program.dataGrids[index].Rows[i].Cells[j].Value?.ToString(), out dt))
-						{
-							record.Dateend = DateOnly.FromDateTime(dt);
-						}
-					}
-					else if (scheme[j] == "adress")
-						fullAdress += Program.dataGrids[index].Rows[i].Cells[j].Value.ToString() + " ";
-				}       //составление данных для новой строки
-				fullAdress = fullAdress.Remove(fullAdress.Count() - 1);
-				foreach(string str in scheme)
-				{
-					if (str == "dateEnd")
-						goto dateEndFound;
-				}
-				DateOnly date = record.Datestart;
-				date.AddMonths(1);
-				record.Dateend = date;
-			dateEndFound:
-				Regex regex;															//разделение адреса по правильным переменным
-				Regex punctRemover = new Regex("[^\\w\\s\\d]");
-				fullAdress = punctRemover.Replace(fullAdress, " ");
-				foreach (Region region in regions)
-				{
-					regex = new Regex(region.Regionname);
-					if(regex.IsMatch(fullAdress))
-					{
-						record.Regionid = region.Id;
-						fullAdress = regex.Replace(fullAdress, "");
-						foreach (City city in cities)
-						{
-							regex = new Regex(city.Cityname);
-							if(regex.IsMatch(fullAdress))
+							DateTime dt;
+							if (DateTime.TryParse(Program.dataGrids[index].Rows[i].Cells[j].Value?.ToString(), out dt))
 							{
-								record.Cityid = city.Id;
-								fullAdress = trashCleaner.Replace(fullAdress, "");
-								fullAdress = regex.Replace(fullAdress, "");
-								List<string> stings = new List<string>(fullAdress.Split(" "));
-							check:
-								for(int c = 0; c < stings.Count;c++)
+								record.Datestart = DateOnly.FromDateTime(dt);
+							}
+						}
+						else if (scheme[j] == "dateEnd")
+						{
+							DateTime dt;
+							if (DateTime.TryParse(Program.dataGrids[index].Rows[i].Cells[j].Value?.ToString(), out dt))
+							{
+								record.Dateend = DateOnly.FromDateTime(dt);
+							}
+						}
+						else if (scheme[j] == "adress")
+							fullAdress += Program.dataGrids[index].Rows[i].Cells[j].Value.ToString() + " ";
+					}       //составление данных для новой строки
+					fullAdress = fullAdress.Remove(fullAdress.Count() - 1);
+					foreach (string str in scheme)
+					{
+						if (str == "dateEnd")
+							goto dateEndFound;
+					}
+					DateOnly date = new DateOnly(DateOnly.FromDateTime(DateTime.Now).Year, DateOnly.FromDateTime(DateTime.Now).Month, DateOnly.FromDateTime(DateTime.Now).Day);
+					record.Dateend = date.AddMonths(-1);
+				dateEndFound:
+					MessageBox.Show(record.Datestart.ToString() + " " + record.Dateend.ToString());
+					Regex regex;                                                            //разделение адреса по правильным переменным
+					Regex punctRemover = new Regex("[^\\w\\s\\d]");
+					fullAdress = punctRemover.Replace(fullAdress, " ");
+					foreach (Region region in regions)
+					{
+						regex = new Regex(region.Regionname);
+						if (regex.IsMatch(fullAdress))
+						{
+							record.Regionid = region.Id;
+							fullAdress = regex.Replace(fullAdress, "");
+							foreach (City city in cities)
+							{
+								regex = new Regex(city.Cityname);
+								if (regex.IsMatch(fullAdress))
 								{
-									if(stings[c] ==""||stings[c]==" ")
+									record.Cityid = city.Id;
+									fullAdress = trashCleaner.Replace(fullAdress, "");
+									fullAdress = regex.Replace(fullAdress, "");
+									List<string> stings = new List<string>(fullAdress.Split(" "));
+								check:
+									for (int c = 0; c < stings.Count; c++)
 									{
+										if (stings[c] == "" || stings[c] == " ")
+										{
+											stings.RemoveAt(c);
+											goto check;
+										}
+									}
+									string streetAdress = "";
+									regex = new Regex("\\d");
+								check1:
+									for (int c = 0; c < stings.Count; c++)
+									{
+										if (regex.IsMatch(stings[c]))
+										{
+											break;
+										}
+										streetAdress += stings[c] + " ";
 										stings.RemoveAt(c);
-										goto check;
+										goto check1;
 									}
-								}
-								string streetAdress = "";
-								regex = new Regex("\\d");
-							check1:
-								for (int c = 0; c < stings.Count; c++)
-								{
-									if (regex.IsMatch(stings[c]))
+									streetAdress = streetAdress.Remove(streetAdress.Count() - 1);
+									record.Streetadress = streetAdress;
+									if (stings.Count == 2)
 									{
-										break;
+										record.Streetnumber = stings[0];
+										record.Apartmentnumber = stings[1];
+										goto adressDeciphered;
 									}
-									streetAdress += stings[c] + " ";
-									stings.RemoveAt(c);
-									goto check1;
+									else if (stings.Count == 3)
+									{
+										record.Streetnumber = stings[0] + stings[1];
+										record.Apartmentnumber = stings[2];
+										goto adressDeciphered;
+									}
+									else if (stings.Count == 4)
+									{
+										record.Streetnumber = stings[0] + stings[1];
+										record.Apartmentnumber = stings[2] + stings[3];
+										goto adressDeciphered;
+									}
+									else
+										throw new Exception("меньше двух или больше четырех оставшихся сущностей в номер дома/номер квартиры");
 								}
-								streetAdress = streetAdress.Remove(streetAdress.Count() - 1);
-								record.Streetadress = streetAdress;
-								if (stings.Count == 2)
-								{
-									record.Streetnumber = stings[0];
-									record.Apartmentnumber = stings[1];
-									goto adressDeciphered;
-								}
-								else if (stings.Count == 3)
-								{
-									record.Streetnumber = stings[0] + stings[1];
-									record.Apartmentnumber = stings[2];
-									goto adressDeciphered;
-								}
-								else if (stings.Count == 4)
-								{
-									record.Streetnumber = stings[0] + stings[1];
-									record.Apartmentnumber = stings[2] + stings[3];
-									goto adressDeciphered;
-								}
-								else
-									throw new Exception("меньше двух или больше четырех оставшихся сущностей в номер дома/номер квартиры");
 							}
 						}
 					}
+				adressDeciphered:
+					Program.database.Records.Add(record);
 				}
-			adressDeciphered:
-				Program.database.Records.Add(record);
+				catch(Exception exc)
+				{
+					Program.problematickData.Rows.Add(Program.dataGrids[index].Rows[i]);
+					Program.problematickData.Rows[Program.problematickData.Rows.Count-1].Cells.Add(new DataGridViewTextBoxCell() {Value = exc.Message });
+				}
 			}
 			Program.database.SaveChanges();
-		}
-
+		}   //запись в базу данных
+		public void TransferInfo(int index, int companyid)
+		{
+			List<Layout> layouts = Program.database.Layouts.ToList<Layout>();
+			foreach (Layout layout in layouts)
+			{
+				if (layout.Companyid == companyid)
+				{
+					SetLayout(layout.Scheme);
+					RecordInfo(index);
+					return;
+				}
+			}
+			BuildScheme(index);
+			Layout l = new Layout();
+			l.Companyid = companyid;
+			l.Scheme = GetFullScheme();
+			l.Layout1 = " ";
+			Program.database.Layouts.Add(l);
+			Program.database.SaveChanges();
+			RecordInfo(index);
+		}   //создает схему данных(если не найдет) и сохраняет данные в базу
 	}
 }
