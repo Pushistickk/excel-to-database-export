@@ -1,0 +1,42 @@
+CREATE TABLE Regions (
+  id SERIAL NOT NULL PRIMARY KEY,
+  regionName VARCHAR(50) NOT NULL
+);
+CREATE TABLE Cities (
+  id SERIAL NOT NULL PRIMARY KEY,
+  cityName VARCHAR(50) NOT NULL
+);
+CREATE TABLE Users (
+  accountNumber INTEGER NOT NULL PRIMARY KEY,
+  FNP VARCHAR(50) NOT NULL,
+  region VARCHAR(50) NOT NULL,
+  city VARCHAR(50) NOT NULL,
+  streetAdress VARCHAR(50) NOT NULL,
+  streetNumber VARCHAR(50) NOT NULL,
+  apartmentNumber VARCHAR(50) NOT NULL
+);
+CREATE TABLE Companies (
+  ID SERIAL NOT NULL PRIMARY KEY,
+  companyName VARCHAR(50) NOT NULL
+);
+CREATE TABLE Layouts (
+  accountNumber SERIAL NOT NULL PRIMARY KEY,
+  companyID INTEGER NOT NULL,
+  layout VARCHAR(50) NOT NULL,
+  scheme VARCHAR(50) NOT NULL,
+  FOREIGN KEY(companyID) REFERENCES Companies (id)
+);
+CREATE TABLE Records (
+  ID SERIAL NOT NULL PRIMARY KEY,
+  accountNumber INTEGER NOT NULL,
+  FNP VARCHAR(50) NOT NULL,
+  regionID INTEGER NOT NULL,
+  cityID INTEGER NOT NULL,
+  streetAdress VARCHAR(50) NOT NULL,
+  streetNumber VARCHAR(50) NOT NULL,
+  apartmentNumber VARCHAR(50) NOT NULL,
+  dateStart DATE not NULL,
+  dateEnd DATE not NULL,
+  meterType VARCHAR(50) NOT NULL,
+  meterReading INTEGER NOT NULL
+);
